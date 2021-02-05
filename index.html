@@ -1,0 +1,306 @@
+<html>
+
+<head>
+    <title>Web App - Coursework 1</title>
+    <script src="https://unpkg.com/vue"></script>
+    <script src="product.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="main.css">
+
+    </link>
+
+</head>
+
+<body>
+    <div id="app">
+        <header>
+            <h1 class="pagetitle" v-text="sitename"></h1>
+            <!-- Nav Bar -->
+            <nav>
+                <ul>
+                    <li class="active"><button v-on:click="page('showProduct')">Home</button></li>
+                    <li><button disabled='disabled'>Cart : {{cartitemCount}} </button></li>
+                    <li v-if="cartitemCount > 0"><button v-on:click='showCheckout'>Checkout</button></li>
+                    <li v-else><button disabled = 'disabled'>Checkout</button></li>
+                </ul>
+            </nav>
+        </header>
+        <main>
+            <div v-if="showProduct">
+                <!-- Sorting Menu -->
+                <div class="nav-side-menu">
+                    <div class="brand">Sorting Menu</div>
+                    <div class="menu-list">
+                        <ul id="menu-content" class="menu-content collapse out">
+                            <li>
+                                <input type="checkbox" v-on:click="sort('title')">
+                                <label>Subject</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" v-on:click="sort('location')">
+                                <label>Location</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" v-on:click="sort('price')">
+                                <label>Price</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" v-on:click="sort('seatsLeft')">
+                                <label>Seats Available</label>
+                            </li>
+                            <br>
+                            <li>
+                                <input input type="checkbox" v-on:click="order('ascending')">
+                                <label>Ascending Order</label>
+                            </li>
+                            <li>
+                                <input input type="checkbox" v-on:click="order('descending')">
+                                <label>Descending Order</label>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <!-- display all the products using for loop -->
+                <div v-for="product in items">
+                    <div class="product-card">
+                        <div class="product-tumb">
+                            <img v-bind:src="product.image">
+                        </div>
+                        <div class="product-details">
+                            <h2 v-text="product.title"></h2>
+                            <p>
+                                Location: {{product.location}}
+                            </p>
+                            <div class="product-bottom-details">
+                                <div class="product-price">
+                                    <p> Price: {{product.price}}</p>
+                                    <p> Seats Remaining : {{product.availableSpace}} </p>
+                                    <div class="buttons-coll">
+                                        <!-- add to cart button -->
+                                        <button class="custom-btn btn-1" v-on:click="addtoCart(product)" v-if='canAddToCart(product)'>
+                                            Apply
+                                        </button>
+                                        <!-- Checking Seats Remaining  using if else to display whether products sold out or are left to purchase -->
+                                        <span v-if="product.seats === cartCount(product.id)">
+                                            All seats booked!
+                                        </span>
+                                        <span v-else-if="product.seats - cartCount(product.id) < 5">
+                                            only {{product.availableSpace}} seats left!
+                                        </span>
+                                        <span v-else>
+                                            Book Now!
+                                        </span>
+                                        <button disabled='disabled' v-else>Apply for class</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- Checkout Page -->
+            <div v-else>
+                <!-- Checkout Form to enter name and phone number -->
+                <div class="wrapper">
+                    <div class="checkoutContainer">
+                        <div class="title">Checkout Form</div>
+                        <div class="input-form">
+                            <div class="section-1">
+                                <div class="items">
+                                    <label class="label">Full Name</label>
+                                    <input type="text" class="input" placeholder="Enter your full name"
+                                        v-model="firstName" @keypress="isLetter($event)">
+                                </div>
+                            </div>
+                            <div class="section-2">
+                                <div class="items">
+                                    <label class="label">Phone Number</label>
+                                    <input type="number" class="input" placeholder="Enter phone number" v-model="phone">
+                                </div>
+                            </div>
+                        </div>
+                        <button class="btn" v-on:click="submitForm">Checkout</button>
+                    </div>
+                </div>
+                <!-- shopping cart -->
+                <h1 class="pagetitle">Shopping Cart</h1>
+                <div v-for="product in origItems" v-if="Math.abs(product.availableSpace - cartCount(product.id) - 5) > 0" >
+                    <div class="product-card" >
+                        <div class="product-tumb">
+                            <img v-bind:src="product.image">
+                        </div>
+                        <div class="product-details">
+                            <h2 v-text="product.title"></h2>
+                            <p>
+                                Location: {{product.location}}
+                            </p>
+                            <div class="product-bottom-details">
+                                <div class="product-price">
+                                    <p> Price: {{product.price}}</p>
+                                    <p> Seats booked : {{cartCount(product.id)}} </p>
+                                    <div class="buttons-coll">
+                                        <button class="custom-btn btn-1" v-on:click="deleteItem(product)">Remove from
+                                            cart</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        
+
+        var webstore = new Vue({
+            el: "#app",
+            data: {
+                sitename: "After School Classes",
+                origItems: product,
+                cart: [],
+                showProduct: true,
+                sortType: '',
+                sortMethod: '',
+                phone: '',
+                firstName: '',
+            },
+            methods: {
+                addtoCart(product) {
+                    this.cart.push(product.id); 
+                    product.availableSpace--;
+                },
+                showCheckout() {
+                    this.showProduct = this.showProduct ? false : true;
+                },
+
+                submitForm() {
+                    if(this.cartitemCount > 0){
+                    if (!this.firstName) {
+                        alert('Please Enter Name');
+                    }
+                    else if (!this.phone) {
+                        alert('Please Enter Phone Number')
+                    }
+                    else {
+                        alert('Order Submitted!')
+                    }
+                    }
+                    else {
+                        alert("Cart Empty!");
+                    }
+                },
+                canAddToCart: function (product) {
+                    return product.seats > this.cartCount(product.id);
+                },
+                cartCount(id) {
+                    let count = 0;
+                    for (let i = 0; i < this.cart.length; i++) {
+                        if (this.cart[i] === id) {
+                            count++;
+                        }
+                    }
+                    return count;
+                },
+                // used to only allow the user to enter letters in the textfield
+                isLetter(e) {
+                    let char = String.fromCharCode(e.keyCode);
+                    if (/^[A-Za-z]+$/.test(char)) return true;
+                    else e.preventDefault();
+                },
+                // used to get the type and order of sorting choosen by the user
+                sort(type) {
+                    this.sortType = type;
+                },
+                page(type) {
+                    this.showProduct = type;
+                },
+                order(type) {
+                    this.sortMethod = type;
+                },
+                // deletes item from shopping cart
+                deleteItem(product) {
+                    this.cart.splice(this.cart.indexOf(product.id),1);
+                    product.availableSpace++;
+                },
+            },
+            computed: {
+                cartitemCount: function () {
+                    return this.cart.length || '';
+                },
+                firstNameValid() {
+                    return /^[A-Za-z]+$/.test(this.firstName);
+                },
+                // Ascending Order Sort
+                items() {
+                    if (this.sortType === '') return this.origItems;
+                    if (this.sortMethod === 'ascending') {
+                        if (this.sortType === 'title') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.title < b.title) return -1;
+                                if (a.title > b.title) return 1;
+                                return 0;
+                            });
+                        }
+                        if (this.sortType === 'price') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.price < b.price) return -1;
+                                if (a.price > b.price) return 1;
+                                return 0;
+                            });
+                        }
+                        if (this.sortType === 'location') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.location < b.location) return -1;
+                                if (a.location > b.location) return 1;
+                                return 0;
+                            });
+                        }
+                        if (this.sortType === 'seatsLeft') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.availableSpace < b.availableSpace) return -1;
+                                if (a.availableSpace > b.availableSpace) return 1;
+                                return 0;
+                            });
+                        }
+                    }
+                    // descending Order Sort
+                    if (this.sortMethod === 'descending') {
+                        if (this.sortType === 'title') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.title < b.title) return 1;
+                                if (a.title > b.title) return -1;
+                                return 0;
+                            });
+                        }
+                        if (this.sortType === 'price') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.price < b.price) return 1;
+                                if (a.price > b.price) return -1;
+                                return 0;
+                            });
+                        }
+                        if (this.sortType === 'location') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.location < b.location) return 1;
+                                if (a.location > b.location) return -1;
+                                return 0;
+                            });
+                        }
+                        if (this.sortType === 'seatsLeft') {
+                            return this.origItems.sort((a, b) => {
+                                if (a.availableSpace < b.availableSpace) return 1;
+                                if (a.availableSpace > b.availableSpace) return -1;
+                                return 0;
+                            });
+                        }
+                    }
+                }
+            },
+        });
+    </script>
+
+</body>
+
+</html>
