@@ -17,8 +17,8 @@ MongoClient.connect('mongodb+srv://mongoDB:mongoDB@cluster0.kotmn.mongodb.net', 
 
 // display a msg 
 app.get('/', (req, res, next) => {
-    // res.send('Select a collection, e.g., /collection/messages')
-    res.sendFile('index.html')
+    res.send('Select a collection, e.g., /collection/messages')
+    // res.sendFile('index.html')
 })
 
 // get the collection name

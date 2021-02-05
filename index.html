@@ -108,14 +108,14 @@
                             <div class="section-1">
                                 <div class="items">
                                     <label class="label">Full Name</label>
-                                    <input type="text" class="input" placeholder="Enter your full name"
+                                    <input type="text" class="input" id="orderName" placeholder="Enter your full name"
                                         v-model="firstName" @keypress="isLetter($event)">
                                 </div>
                             </div>
                             <div class="section-2">
                                 <div class="items">
                                     <label class="label">Phone Number</label>
-                                    <input type="number" class="input" placeholder="Enter phone number" v-model="phone">
+                                    <input type="number" class="input" id="orderPhone" placeholder="Enter phone number" v-model="phone">
                                 </div>
                             </div>
                         </div>
@@ -200,6 +200,18 @@
                         }
                         else {
                             alert('Order Submitted!')
+
+                            var orderName = document.getElementById('orderName').value;
+                            var orderPhone = document.getElementById('orderPhone').value;
+                            newProduct = {title: orderName, orderPhone};
+                            // set the url to your server and route
+                            fetch('https://web-app-lab.herokuapp.com/collection/orders', {
+                                method: 'POST', // set the HTTP method as 'POST'
+                                headers: {
+                                    'Content-Type': 'application/json', // set the data type as JSON
+                                },
+                                body: JSON.stringify(newProduct), // need to stringify the JSON object
+                            })
                         }
                     }
                     else {
