@@ -12,7 +12,7 @@ app.use((req, res, next) => {
 const MongoClient = require('mongodb').MongoClient;
 let db;
 MongoClient.connect('mongodb+srv://mongoDB:mongoDB@cluster0.kotmn.mongodb.net', (err, client) => {
-    db = client.db('Cw2')
+    db = client.db('CW2')
 })
 
 // display a msg 
