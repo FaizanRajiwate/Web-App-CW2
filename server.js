@@ -12,12 +12,13 @@ app.use((req, res, next) => {
 const MongoClient = require('mongodb').MongoClient;
 let db;
 MongoClient.connect('mongodb+srv://mongoDB:mongoDB@cluster0.kotmn.mongodb.net', (err, client) => {
-    db = client.db('webstore')
+    db = client.db('Cw2')
 })
 
 // display a msg 
 app.get('/', (req, res, next) => {
-    res.send('Select a collection, e.g., /collection/messages')
+    // res.send('Select a collection, e.g., /collection/messages')
+    res.sendFile('index.html')
 })
 
 // get the collection name
