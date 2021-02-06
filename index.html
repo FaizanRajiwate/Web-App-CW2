@@ -138,7 +138,7 @@
                             <div class="product-bottom-details">
                                 <div class="product-price">
                                     <p> Price: {{product.price}}</p>
-                                    <p> Seats booked : {{cartCount(product.id)}} </p>
+                                    <p> Seats booked : {{product.seats - product.availableSpace}} </p>
                                     <div class="buttons-coll">
                                         <button class="custom-btn btn-1" v-on:click="deleteItem(product)">Remove from
                                             cart</button>
@@ -188,7 +188,7 @@
 
             methods: {
                 addtoCart(product) {
-                    this.cart.push(product.id);
+                    this.cart.push(product);
                     product.availableSpace--;
                 },
                 showCheckout() {
@@ -196,6 +196,7 @@
                 },
 
                 submitForm() {
+                    this.orders['items'].push(this.cart)
                     if (this.cartitemCount > 0) {
                         if (!this.firstName) {
                             alert('Please Enter Name');
@@ -258,7 +259,7 @@
                 },
                 // deletes item from shopping cart
                 deleteItem(product) {
-                    this.cart.splice(this.cart.indexOf(product.id), 1);
+                    this.cart.splice(this.cart.indexOf(product), 1);
                     product.availableSpace++;
                 },
             },
