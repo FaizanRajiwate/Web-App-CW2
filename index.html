@@ -161,6 +161,11 @@
                 product: {},
                 sitename: "After School Classes",
                 cart: [],
+                orders: {
+                    username:'',
+                    phone: '' ,
+                    items: [],
+                },
                 showProduct: true,
                 sortType: '',
                 sortMethod: '',
@@ -203,14 +208,19 @@
 
                             var orderName = document.getElementById('orderName').value;
                             var orderPhone = document.getElementById('orderPhone').value;
-                            newProduct = {title: orderName, orderPhone};
                             // set the url to your server and route
                             fetch('https://web-app-lab.herokuapp.com/collection/orders', {
                                 method: 'POST', // set the HTTP method as 'POST'
                                 headers: {
                                     'Content-Type': 'application/json', // set the data type as JSON
                                 },
-                                body: JSON.stringify(newProduct), // need to stringify the JSON object
+                                body: JSON.stringify(
+                                    {
+                                        "Username": orderName,
+                                        "Phone Number": orderPhone,
+                                       productID: this.orders['items'],
+                                    }
+                                ), // need to stringify the JSON object
                             })
                         }
                     }
