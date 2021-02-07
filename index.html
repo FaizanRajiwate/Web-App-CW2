@@ -161,11 +161,7 @@
                 product: {},
                 sitename: "After School Classes",
                 cart: [],
-                orders: {
-                    username:'',
-                    phone: '' ,
-                    items: [],
-                },
+                Items: [],
                 showProduct: true,
                 sortType: '',
                 sortMethod: '',
@@ -188,7 +184,21 @@
 
             methods: {
                 addtoCart(product) {
-                    this.cart.push(product);
+                    this.cart.push(product.id);
+                    // Check if a value exists in the Items array
+                    var checker = this.Items.includes(product);
+                    console.log(checker);
+                    if (checker === true) {
+                        console.log("Value exists!")
+                        objIndex = this.Items.findIndex((obj => obj.quantity == 1));
+                        this.Items[objIndex].quantity += 1;
+
+                    } else {
+                        console.log("Value does not exists!")
+                        this.Items.push(product);
+                        objIndex = this.Items.findIndex((obj => obj.quantity == 0));
+                        this.Items[objIndex].quantity += 1;
+                    }
                     product.availableSpace--;
                 },
                 showCheckout() {
@@ -219,7 +229,7 @@
                                     {
                                         "Username": orderName,
                                         "Phone Number": orderPhone,
-                                       productID: this.orders['items'],
+                                        "Products": this.Items,
                                     }
                                 ), // need to stringify the JSON object
                             })
@@ -259,7 +269,7 @@
                 },
                 // deletes item from shopping cart
                 deleteItem(product) {
-                    this.cart.splice(this.cart.indexOf(product), 1);
+                    this.cart.splice(this.cart.indexOf(product.id), 1);
                     product.availableSpace++;
                 },
             },
