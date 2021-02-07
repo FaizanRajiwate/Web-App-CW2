@@ -176,7 +176,6 @@
                     function (response) {
                         response.json().then(
                             function (json) {
-                                // note that we used 'store.product' instead of 'this.product' 
                                 webstore.product = json;
                             });
                     })
@@ -188,14 +187,12 @@
                     // Check if a value exists in the Items array
                     var checker = this.Items.includes(product);
                     console.log(checker);
-                    if (checker === true) {
-                        console.log("Value exists!")
+                    if (checker === true) {//if the same product is added to cart again, only increases the quantity by 1
                         objIndex = this.Items.findIndex((obj => obj.quantity == 1));
                         this.Items[objIndex].quantity += 1;
 
                     } else {
-                        console.log("Value does not exists!")
-                        this.Items.push(product);
+                        this.Items.push(product);//if the product does not exist, adds the product to Items array and increases quantity by 1
                         objIndex = this.Items.findIndex((obj => obj.quantity == 0));
                         this.Items[objIndex].quantity += 1;
                     }
@@ -206,7 +203,6 @@
                 },
 
                 submitForm() {
-                    this.orders['items'].push(this.cart)
                     if (this.cartitemCount > 0) {
                         if (!this.firstName) {
                             alert('Please Enter Name');
@@ -216,7 +212,7 @@
                         }
                         else {
                             alert('Order Submitted!')
-                            //Adding the orders in orders collection
+                            //gets both name and phone number from the text fields
                             var orderName = document.getElementById('orderName').value;
                             var orderPhone = document.getElementById('orderPhone').value;
                             // set the url to your server and route
@@ -225,29 +221,30 @@
                                 headers: {
                                     'Content-Type': 'application/json', // set the data type as JSON
                                 },
-                                body: JSON.stringify(
+                                body: JSON.stringify(// need to stringify the JSON object
                                     {
                                         "Username": orderName,
                                         "Phone Number": orderPhone,
                                         "Products": this.Items,
                                     }
-                                ), // need to stringify the JSON object
+                                ), 
                             })
+
                             //updating available seats after an order has been placed
                             for (var i = 0; i < this.cart.length; i++) {
-                                newQuantity = this.Items[i].availableSpace;
-                                id = this.Items[i]._id;
+                                newQuantity = this.Items[i].availableSpace;//gets the number of seats left from Items array
+                                id = this.Items[i]._id;//gets the objectID from Items array
                                 //set the url to your server and route
                                 fetch('https://web-app-lab.herokuapp.com/collection/product/' + id, {
                                     method: 'PUT', // set the HTTP method as 'PUT'
                                     headers: {
                                         'Content-Type': 'application/json',// set the data type as JSON
                                     },
-                                    body: JSON.stringify(
+                                    body: JSON.stringify(// need to stringify the JSON object
                                         {
-                                            "availableSpace": newQuantity
+                                            "availableSpace": newQuantity//updates the productDB
                                         }
-                                    ), // need to stringify the JSON object
+                                    ), 
                                 })
                             }
                         }
