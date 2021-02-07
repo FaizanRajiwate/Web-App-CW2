@@ -115,7 +115,8 @@
                             <div class="section-2">
                                 <div class="items">
                                     <label class="label">Phone Number</label>
-                                    <input type="number" class="input" id="orderPhone" placeholder="Enter phone number" v-model="phone">
+                                    <input type="number" class="input" id="orderPhone" placeholder="Enter phone number"
+                                        v-model="phone">
                                 </div>
                             </div>
                         </div>
@@ -124,8 +125,7 @@
                 </div>
                 <!-- shopping cart -->
                 <h1 class="pagetitle">Shopping Cart</h1>
-                <div v-for="product in product"
-                    v-if="Math.abs(product.availableSpace - cartCount(product.id) - 5) > 0">
+                <div v-for="product in product" v-if="Math.abs(product.availableSpace - cartCount(product.id) - 5) > 0">
                     <div class="product-card">
                         <div class="product-tumb">
                             <img v-bind:src="product.image">
@@ -216,7 +216,7 @@
                         }
                         else {
                             alert('Order Submitted!')
-
+                            //Adding the orders in orders collection
                             var orderName = document.getElementById('orderName').value;
                             var orderPhone = document.getElementById('orderPhone').value;
                             // set the url to your server and route
@@ -233,6 +233,23 @@
                                     }
                                 ), // need to stringify the JSON object
                             })
+                            //updating available seats after an order has been placed
+                            for (var i = 0; i < this.cart.length; i++) {
+                                newQuantity = this.Items[i].availableSpace;
+                                id = this.Items[i]._id;
+                                //set the url to your server and route
+                                fetch('https://web-app-lab.herokuapp.com/collection/product/' + id, {
+                                    method: 'PUT', // set the HTTP method as 'PUT'
+                                    headers: {
+                                        'Content-Type': 'application/json',// set the data type as JSON
+                                    },
+                                    body: JSON.stringify(
+                                        {
+                                            "availableSpace": newQuantity
+                                        }
+                                    ), // need to stringify the JSON object
+                                })
+                            }
                         }
                     }
                     else {
