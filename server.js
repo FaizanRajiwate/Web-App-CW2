@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 var path = require("path");
+// display index.html when heroku app first reloads
 var htmlPath = path.resolve(__dirname,"");
 app.use(express.static(htmlPath));
 
