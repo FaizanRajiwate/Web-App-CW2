@@ -1,5 +1,8 @@
-const express = require('express')
-const app = express()
+const express = require('express');
+const app = express();
+var path = require("path");
+var htmlPath = path.resolve(__dirname,"");
+app.use(express.static(htmlPath));
 
 app.use(express.json())
 app.set('port', 3000)
