@@ -186,7 +186,6 @@
                     this.cart.push(product.id);
                     // Check if a value exists in the Items array
                     var checker = this.Items.includes(product);
-                    console.log(checker);
                     if (checker === true) {//if the same product is added to cart again, only increases the quantity by 1
                         objIndex = this.Items.findIndex((obj => obj.quantity == 1));
                         this.Items[objIndex].quantity += 1;
@@ -201,7 +200,7 @@
                 showCheckout() {
                     this.showProduct = this.showProduct ? false : true;
                 },
-
+                
                 submitForm() {
                     if (this.cartitemCount > 0) {
                         if (!this.firstName) {
