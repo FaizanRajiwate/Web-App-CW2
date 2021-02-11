@@ -200,7 +200,7 @@
                 showCheckout() {
                     this.showProduct = this.showProduct ? false : true;
                 },
-                
+
                 submitForm() {
                     if (this.cartitemCount > 0) {
                         if (!this.firstName) {
@@ -226,7 +226,7 @@
                                         "Phone Number": orderPhone,
                                         "Products": this.Items,
                                     }
-                                ), 
+                                ),
                             })
 
                             //updating available seats after an order has been placed
@@ -243,7 +243,7 @@
                                         {
                                             "availableSpace": newQuantity//updates the productDB
                                         }
-                                    ), 
+                                    ),
                                 })
                             }
                         }
