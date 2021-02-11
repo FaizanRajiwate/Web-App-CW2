@@ -189,13 +189,15 @@
                     if (checker === true) {//if the same product is added to cart again, only increases the quantity by 1
                         objIndex = this.Items.findIndex((obj => obj.quantity == 1));
                         this.Items[objIndex].quantity += 1;
+                        product.availableSpace--;
 
                     } else {
                         this.Items.push(product);//if the product does not exist, adds the product to Items array and increases quantity by 1
                         objIndex = this.Items.findIndex((obj => obj.quantity == 0));
                         this.Items[objIndex].quantity += 1;
+                        product.availableSpace--;
                     }
-                    product.availableSpace--;
+                    
                 },
                 showCheckout() {
                     this.showProduct = this.showProduct ? false : true;
